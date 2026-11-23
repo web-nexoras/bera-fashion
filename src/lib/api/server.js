@@ -43,7 +43,7 @@ export async function serverFetch(path, options = {}) {
     }
     const cookieStore = await cookies();
     const session = decodeSession(cookieStore.get(AUTH_COOKIE)?.value);
-    const storedToken = token ?? session?.accessToken ?? cookieStore.get("bera_access_token")?.value;
+    const storedToken = token ?? session?.accessToken;
     const storedSession = sessionId ?? cookieStore.get(SESSION_ID_COOKIE)?.value;
     try {
         const response = await fetch(backendUrl(path), {

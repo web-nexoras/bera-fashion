@@ -86,7 +86,6 @@ export async function POST(request, context) {
         const response = NextResponse.json({ success: true, message: "Logged out successfully" });
         response.cookies.delete(AUTH_COOKIE);
         response.cookies.delete(SESSION_ID_COOKIE);
-        response.cookies.delete("bera_access_token");
         return response;
     }
     const envelope = await callBackend(pathname, "POST", outgoing, cookieStore.get(AUTH_COOKIE)?.value
@@ -101,7 +100,6 @@ export async function POST(request, context) {
             const session = {
                 user: data.user,
                 accessToken: data.accessToken,
-                refreshToken: data.refreshToken ?? data.accessToken,
             };
             const response = NextResponse.json({
                 success: true,

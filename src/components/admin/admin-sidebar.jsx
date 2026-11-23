@@ -69,7 +69,7 @@ export function AdminSidebar() {
 
         <nav className="no-scrollbar flex-1 overflow-y-auto px-3 py-5">
           {groups.map((group) => (<div key={group.heading} className="mb-6 last:mb-0">
-              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
+              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
                 {group.heading}
               </p>
               <div className="space-y-0.5">
@@ -78,9 +78,9 @@ export function AdminSidebar() {
                 const active = isActive(item.href);
                 return (<Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={cn("group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors", active
                         ? "bg-white/12 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                        : "text-white/60 hover:bg-white/8 hover:text-white")}>
+                        : "text-white/85 hover:bg-white/8 hover:text-white")}>
                       {active && (<span className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-gold-300"/>)}
-                      <Icon className={cn("size-[18px] shrink-0", active ? "text-gold-300" : "text-white/50 group-hover:text-white/80")}/>
+                      <Icon className={cn("size-[18px] shrink-0", active ? "text-gold-300" : "text-white/75 group-hover:text-white")}/>
                       {item.label}
                     </Link>);
             })}
@@ -101,7 +101,7 @@ export function AdminSidebar() {
             </span>
             <div className="leading-tight">
               <p className="text-[11px] font-semibold text-white/90">Store status</p>
-              <p className="flex items-center gap-1 text-[10px] text-white/50">
+              <p className="flex items-center gap-1 text-[10px] text-white/75">
                 <span className="size-1.5 rounded-full bg-emerald-400"/> All systems operational
               </p>
             </div>

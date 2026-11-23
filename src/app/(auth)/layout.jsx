@@ -55,7 +55,7 @@ export default function AuthLayout({ children }) {
                 </span>
                 <div>
                   <p className="text-sm font-bold text-white">{title}</p>
-                  <p className="mt-1 text-xs leading-5 text-white/60">{copy}</p>
+                  <p className="mt-1 text-xs leading-5 text-white/85">{copy}</p>
                 </div>
               </div>))}
           </div>
@@ -64,7 +64,7 @@ export default function AuthLayout({ children }) {
         <div className="relative z-10 flex items-end justify-between gap-6 border-t border-white/10 pt-6">
           <div>
             <p className="font-display text-lg italic text-white/90">&ldquo;Elegance is the balance of ease and detail.&rdquo;</p>
-            <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-white/45">The BERA edit</p>
+            <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-white/75">The BERA edit</p>
           </div>
           <span className="font-display text-4xl font-bold text-white/10">N.</span>
         </div>

@@ -3,7 +3,10 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { AUTH_COOKIE, SESSION_ID_COOKIE } from "./config";
 export function encodeSession(session) {
-    const payload = Buffer.from(JSON.stringify(session), "utf8").toString("base64url");
+    const payload = Buffer.from(JSON.stringify({
+        ...session,
+        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    }), "utf8").toString("base64url");
     return `${payload}.${sign(payload)}`;
 }
 export function decodeSession(value) {
@@ -14,7 +17,8 @@ export function decodeSession(value) {
         if (!payload || !signature || extra.length || !safeEqual(signature, sign(payload)))
             return null;
         const parsed = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-        if (!parsed.user?._id || !parsed.user.role || !parsed.accessToken)
+        if (!parsed.user?._id || !parsed.user.role || !parsed.accessToken ||
+            !Number.isFinite(parsed.expiresAt) || parsed.expiresAt <= Date.now())
             return null;
         return parsed;
     }
