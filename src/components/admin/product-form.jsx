@@ -5,7 +5,6 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/input";
 import { useAdminQuery } from "./admin-data";
 import { PRODUCT_STATUSES } from "@/lib/constants";
-import { fallbackBrands, fallbackCategories } from "@/lib/fallback/data";
 import { titleCase } from "@/lib/utils";
 const blank = {
     name: "",
@@ -23,8 +22,8 @@ const relationId = (value) => typeof value === "string" ? value : (value?._id ??
 export function ProductForm({ initial, loading = false, pending = false, onSubmit, title = "Product details", description = "Basic information, pricing and merchandising flags.", }) {
     const [values, setValues] = useState(blank);
     const [errors, setErrors] = useState({});
-    const { data: categories } = useAdminQuery(["admin", "categories", "options"], "categories", fallbackCategories);
-    const { data: brands } = useAdminQuery(["admin", "brands", "options"], "brands", fallbackBrands);
+    const { data: categories = [] } = useAdminQuery(["admin", "categories", "options"], "categories");
+    const { data: brands = [] } = useAdminQuery(["admin", "brands", "options"], "brands");
     const [loadedInitial, setLoadedInitial] = useState(initial);
     if (initial && initial !== loadedInitial) {
         setLoadedInitial(initial);

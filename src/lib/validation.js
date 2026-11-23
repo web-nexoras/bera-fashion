@@ -12,17 +12,15 @@ const bangladeshPhone = z
     .regex(/^(?:\+?880|0)1[3-9]\d{8}$/, "Enter a valid Bangladeshi mobile number");
 export const strongPassword = z
     .string()
-    .min(10, "Use at least 10 characters")
+    .min(6, "Use at least 6 characters")
     .max(128, "Password is too long")
-    .regex(/[a-z]/, "Include a lowercase letter")
-    .regex(/[A-Z]/, "Include an uppercase letter")
-    .regex(/\d/, "Include a number")
-    .regex(/[^A-Za-z0-9]/, "Include a special character");
+    .regex(/[A-Za-z]/, "Include at least one letter")
+    .regex(/\d/, "Include at least one number");
 export const loginSchema = z.object({
     email,
     password: z
         .string()
-        .min(8, "Password must be at least 8 characters")
+        .min(6, "Password must be at least 6 characters")
         .max(128, "Password is too long"),
 });
 export const registerSchema = z

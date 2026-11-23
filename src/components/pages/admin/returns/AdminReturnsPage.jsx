@@ -10,11 +10,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { Input, Select } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackReturns } from "@/lib/fallback/data";
 import { formatBDT, formatDate, titleCase } from "@/lib/utils";
 const STATUSES = ["requested", "approved", "rejected", "completed"];
 export default function AdminReturnsPage() {
-    const { data } = useAdminList(["admin", "returns"], "returns/admin", fallbackReturns);
+    const { data } = useAdminList(["admin", "returns"], "returns/admin");
     const action = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");

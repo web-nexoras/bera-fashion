@@ -11,7 +11,7 @@ export default function AdminProductEditPage() {
     const id = String(params.id ?? "");
     const queryClient = useQueryClient();
     const update = useAdminAction();
-    const productQuery = useAdminQuery(["admin", "product", id], `products/${id}`, null);
+    const productQuery = useAdminQuery(["admin", "product", id], `products/${id}`);
     return (<div className="space-y-6">
       <PageHeading title="Edit product" description={`Updating ${productQuery.data?.name ?? "catalogue item"}.`}/>
       <ProductForm initial={productQuery.data ?? undefined} loading={productQuery.isFetching && !productQuery.data} pending={update.isPending} title="Edit product details" description="Update pricing, taxonomy and merchandising flags." onSubmit={(values) => update.mutate({ path: `products/${id}`, method: "PUT", body: values }, {

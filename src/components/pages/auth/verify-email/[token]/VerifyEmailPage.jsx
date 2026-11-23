@@ -47,7 +47,7 @@ export default function VerifyEmailPage() {
           <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-ink-500">
             {message || "Your email address has been confirmed. You're all set to explore BERA."}
           </p>
-          <ButtonLink href="/login" size="lg" className="mt-8 w-full">
+          <ButtonLink href="/sign-in" size="lg" className="mt-8 w-full">
             Continue to sign in
           </ButtonLink>
         </>)}

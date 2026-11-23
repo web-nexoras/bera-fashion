@@ -1,3 +1,3 @@
 export { default } from "@/components/pages/store/HomePage";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";

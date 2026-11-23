@@ -12,16 +12,10 @@ import { Field, Input, Select, Textarea } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { Tabs } from "@/components/ui/tabs";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackProducts } from "@/lib/fallback/data";
 import { titleCase } from "@/lib/utils";
-const fallbackInventory = fallbackProducts.flatMap((product) => product.variants.map((variant) => ({
-    ...variant,
-    productName: product.name,
-    productImage: product.images[0]?.url,
-})));
 export default function AdminInventoryPage() {
     const queryClient = useQueryClient();
-    const { data } = useAdminList(["admin", "inventory"], "inventory?limit=100", fallbackInventory);
+    const { data } = useAdminList(["admin", "inventory"], "inventory?limit=100");
     const adjust = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [tab, setTab] = useState("all");

@@ -12,14 +12,13 @@ import { Input, Select } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { PageHeading } from "@/components/ui/section-heading";
 import { PRODUCT_STATUSES } from "@/lib/constants";
-import { fallbackCategories, fallbackProducts } from "@/lib/fallback/data";
 import { formatBDT, mainImage, productPrice, titleCase } from "@/lib/utils";
 const relationName = (value) => typeof value === "string" ? value : (value?.name ?? "—");
 const relationId = (value) => typeof value === "string" ? value : (value?._id ?? "");
 export default function AdminProductsPage() {
     const queryClient = useQueryClient();
-    const { data, refetch, isFetching } = useAdminList(["admin", "products"], "products?limit=50", fallbackProducts);
-    const { data: categories } = useAdminQuery(["admin", "categories", "options"], "categories", fallbackCategories);
+    const { data, refetch, isFetching } = useAdminList(["admin", "products"], "products?limit=50");
+    const { data: categories = [] } = useAdminQuery(["admin", "categories", "options"], "categories");
     const remove = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");

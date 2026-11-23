@@ -19,7 +19,7 @@ import { Field, Input, Select, Textarea } from "@/components/ui/input";
 import { PageHeading } from "@/components/ui/section-heading";
 import { getAddresses } from "@/api/account.js";
 import { checkout } from "@/api/orders.js";
-import { BANGLADESH_DIVISIONS } from "@/lib/constants";
+import { BANGLADESH_DIVISIONS, PENDING_ORDER_ITEM_KEY } from "@/lib/constants";
 import { cn, formatBDT } from "@/lib/utils";
 const checkoutSchema = z.object({
     recipientName: z.string().trim().min(2, "Enter the recipient's name"),
@@ -52,9 +52,11 @@ function StepHeader({ step, title, description }) {
 export default function CheckoutPage() {
     const router = useRouter();
     const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-    const { cart, summary, isLoading: cartLoading, applyCoupon, removeCoupon, clearCart, } = useCart();
+    const { cart, summary, isLoading: cartLoading, applyCoupon, removeCoupon, clearCart, addItem, } = useCart();
     const [selectedAddressId, setSelectedAddressId] = useState("new");
     const autoAppliedAddress = useRef(false);
+    const restoredPendingOrder = useRef(false);
+    const [restoringPendingOrder, setRestoringPendingOrder] = useState(true);
     const [couponInput, setCouponInput] = useState("");
     const [couponBusy, setCouponBusy] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -121,9 +123,45 @@ export default function CheckoutPage() {
     useEffect(() => {
         if (!authLoading && !cartLoading && !isAuthenticated && cart.items.length > 0) {
             toast.info("Create an account to continue with your order.");
-            router.replace("/register?next=%2Fcheckout");
+            router.replace("/sign-up?next=%2Fcheckout");
         }
     }, [authLoading, cartLoading, isAuthenticated, cart.items.length, router]);
+    useEffect(() => {
+        if (authLoading || cartLoading || restoredPendingOrder.current)
+            return;
+        const stored = sessionStorage.getItem(PENDING_ORDER_ITEM_KEY);
+        if (!stored) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- Finish the one-time sessionStorage hydration check.
+            setRestoringPendingOrder(false);
+            return;
+        }
+        if (!isAuthenticated) {
+            setRestoringPendingOrder(false);
+            router.replace("/sign-up?next=%2Fcheckout");
+            return;
+        }
+        let pendingItem;
+        try {
+            pendingItem = JSON.parse(stored);
+        }
+        catch {
+            sessionStorage.removeItem(PENDING_ORDER_ITEM_KEY);
+            setRestoringPendingOrder(false);
+            return;
+        }
+        if (!pendingItem?.productId || !pendingItem?.variantId || !Number.isInteger(pendingItem.quantity) || pendingItem.quantity < 1) {
+            sessionStorage.removeItem(PENDING_ORDER_ITEM_KEY);
+            setRestoringPendingOrder(false);
+            return;
+        }
+        restoredPendingOrder.current = true;
+        void (async () => {
+            const added = await addItem(pendingItem.productId, pendingItem.variantId, pendingItem.quantity);
+            if (added)
+                sessionStorage.removeItem(PENDING_ORDER_ITEM_KEY);
+            setRestoringPendingOrder(false);
+        })();
+    }, [authLoading, cartLoading, isAuthenticated, addItem, router]);
     const redeemCoupon = async () => {
         const value = couponInput.trim();
         if (!value || couponBusy)
@@ -191,7 +229,7 @@ export default function CheckoutPage() {
         }
         router.push(`/orders/${envelope.data.order._id}?placed=1`);
     };
-    if (cartLoading || authLoading) {
+    if (cartLoading || authLoading || restoringPendingOrder) {
         return (<div className="container-x py-10 sm:py-14">
         <PageHeading title="Checkout" description="Preparing your secure checkout…"/>
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -224,10 +262,10 @@ export default function CheckoutPage() {
     }
     if (!isAuthenticated) {
         return (<div className="container-x py-10 sm:py-14">
-        <PageHeading title="Create an account to order" description="Sign up to continue to checkout. Your bag will be waiting for you." />
+        <PageHeading title="Sign up to order" description="Create an account to continue to checkout. Your bag will be waiting for you." />
         <div className="surface flex flex-col items-center gap-4 px-6 py-12 text-center">
           <p className="max-w-md text-sm text-ink-500">You&apos;ll return to checkout after creating your account and can finish placing your order there.</p>
-          <ButtonLink href="/register?next=%2Fcheckout" size="lg">Create your account</ButtonLink>
+          <ButtonLink href="/sign-up?next=%2Fcheckout" size="lg">Sign up</ButtonLink>
         </div>
       </div>);
     }

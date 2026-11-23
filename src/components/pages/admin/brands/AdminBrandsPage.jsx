@@ -11,11 +11,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackBrands } from "@/lib/fallback/data";
 import { slugify } from "@/lib/utils";
 export default function AdminBrandsPage() {
     const queryClient = useQueryClient();
-    const { data } = useAdminQuery(["admin", "brands"], "brands", fallbackBrands);
+    const { data: liveBrands = [] } = useAdminQuery(["admin", "brands"], "brands");
     const action = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");
@@ -23,7 +22,7 @@ export default function AdminBrandsPage() {
     const [editing, setEditing] = useState(null);
     const [target, setTarget] = useState(null);
     const [form, setForm] = useState({ name: "", description: "", website: "", isActive: true });
-    const brands = overrides ?? data;
+    const brands = overrides ?? liveBrands;
     const filtered = useMemo(() => {
         const term = search.trim().toLowerCase();
         return brands.filter((brand) => !term || brand.name.toLowerCase().includes(term) || brand.slug.includes(term));

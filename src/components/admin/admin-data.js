@@ -21,24 +21,8 @@ export function paginationFor(total, page = 1, limit = 10) {
         hasPrevPage: safePage > 1,
     };
 }
-/**
- * Detects the fallback backend through the health endpoint. The BFF reports
- * `environment: "fallback"` when the Express API is unavailable or OFFLINE_FALLBACK is on.
- */
-export function useFallbackMode() {
-    const { data } = useQuery({
-        queryKey: ["admin", "fallback-mode"],
-        queryFn: async () => {
-            const result = await adminRequest("health");
-            return result.success && result.data?.environment === "fallback";
-        },
-        staleTime: Infinity,
-        retry: false,
-    });
-    return Boolean(data);
-}
-/** Single-resource query with a deterministic fallback for offline rendering. */
-export function useAdminQuery(key, path, fallback) {
+/** Single-resource query backed only by the live API. */
+export function useAdminQuery(key, path) {
     const query = useQuery({
         queryKey: [...key],
         queryFn: async () => {
@@ -48,17 +32,14 @@ export function useAdminQuery(key, path, fallback) {
             }
             return result.data;
         },
-        initialData: fallback,
-        // Treat fallbacks as stale so the live API is always fetched in the background.
-        initialDataUpdatedAt: 0,
     });
-    return { ...query, data: query.data ?? fallback };
+    return query;
 }
 /** List query that normalizes the BFF envelope into rows + pagination. */
-export function useAdminList(key, path, fallback = []) {
+export function useAdminList(key, path) {
     const initial = {
-        items: fallback,
-        pagination: paginationFor(fallback.length, 1, fallback.length || 10),
+        items: [],
+        pagination: emptyPagination,
     };
     const query = useQuery({
         queryKey: [...key],
@@ -70,22 +51,15 @@ export function useAdminList(key, path, fallback = []) {
             return { items, pagination: result.pagination ?? paginationFor(items.length, 1, items.length || 10) };
         },
         initialData: initial,
-        initialDataUpdatedAt: 0,
     });
     return { ...query, data: query.data ?? initial };
 }
-/**
- * Mutation wrapper. The fallback backend intentionally omits a handful of admin
- * write routes; in that case we accept the no-op and let the caller update its
- * local rows so the console remains fully interactive in fallback mode.
- */
+/** Mutation wrapper for live admin endpoints. */
 export function useAdminAction() {
-    const offlineFallback = useFallbackMode();
     return useMutation({
         mutationFn: async ({ path, method = "POST", body }) => {
             const result = await adminRequest(path, { method, body });
-            const fallbackRouteMissing = offlineFallback && (result.status === 404 || /route not found/i.test(result.message ?? ""));
-            if (!result.success && !fallbackRouteMissing) {
+            if (!result.success) {
                 throw new Error(result.message || "Request failed.");
             }
             return result.data;

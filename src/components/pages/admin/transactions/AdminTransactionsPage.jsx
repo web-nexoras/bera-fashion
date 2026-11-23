@@ -12,10 +12,9 @@ import { Modal } from "@/components/ui/modal";
 import { Pagination } from "@/components/ui/pagination";
 import { PageHeading } from "@/components/ui/section-heading";
 import { PAYMENT_STATUSES } from "@/lib/constants";
-import { fallbackTransactions } from "@/lib/fallback/data";
 import { formatBDT, formatDateTime, titleCase } from "@/lib/utils";
 export default function AdminTransactionsPage() {
-    const { data } = useAdminList(["admin", "transactions"], "payments/admin/all", fallbackTransactions);
+    const { data } = useAdminList(["admin", "transactions"], "payments/admin/all");
     const refund = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");

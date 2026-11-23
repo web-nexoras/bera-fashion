@@ -1,1 +1,5 @@
-export { default } from "@/components/pages/auth/login/LoginPage";
+import { redirect } from "next/navigation";
+
+export default function LegacyLoginPage() {
+  redirect("/sign-in");
+}

@@ -3,10 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
-import { photo } from "@/lib/fallback/data";
+import { unsplashPhoto } from "@/lib/images";
 const slides = [
     {
-        image: photo("photo-1483985988355-763728e1935b", 1800),
+        image: unsplashPhoto("photo-1483985988355-763728e1935b", 1800),
         eyebrow: "The new season edit",
         title: <>Elegance, <em className="text-gold-300">worn</em> every day.</>,
         copy: "Considered silhouettes, premium fabrics and quiet details. Discover pieces designed to move with you, from slow mornings to special occasions.",
@@ -14,7 +14,7 @@ const slides = [
         cta: "Shop the collection",
     },
     {
-        image: photo("photo-1490481651871-ab68de25d43d", 1800),
+        image: unsplashPhoto("photo-1490481651871-ab68de25d43d", 1800),
         eyebrow: "Made for your everyday",
         title: <>Find your <em className="text-gold-300">own</em> kind of classic.</>,
         copy: "Easy layers, thoughtful details and a little room to make every look your own. Meet the pieces you'll reach for again and again.",
@@ -22,7 +22,7 @@ const slides = [
         cta: "Explore new arrivals",
     },
     {
-        image: photo("photo-1516257984-b1b4d707412e", 1800),
+        image: unsplashPhoto("photo-1516257984-b1b4d707412e", 1800),
         eyebrow: "The BERA standard",
         title: <>Quality that moves <em className="text-gold-300">with you.</em></>,
         copy: "Small details make a lasting difference. Discover carefully selected fabrics and versatile designs, made to become part of your story.",

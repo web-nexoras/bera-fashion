@@ -1,1 +1,5 @@
-export { default } from "@/components/pages/auth/register/RegisterPage";
+import { redirect } from "next/navigation";
+
+export default function LegacyRegisterPage() {
+  redirect("/sign-up");
+}

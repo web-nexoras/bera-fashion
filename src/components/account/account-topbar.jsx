@@ -1,19 +1,23 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { Bell, BadgeCheck, ShieldCheck, Store } from "lucide-react";
+import { Bell, BadgeCheck, Menu, ShieldCheck, Store } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { initials } from "@/lib/utils";
-export function AccountTopbar({ fallbackUser, }) {
+import { ACCOUNT_SIDEBAR_TOGGLE } from "@/components/account/account-sidebar";
+export function AccountTopbar({ initialUser, }) {
     const { user } = useAuth();
-    const name = user?.name ?? fallbackUser?.name ?? "Guest";
-    const email = user?.email ?? fallbackUser?.email ?? "Welcome to BERA";
-    const avatar = user?.avatar ?? fallbackUser?.avatar;
+    const name = user?.name ?? initialUser?.name ?? "Guest";
+    const email = user?.email ?? initialUser?.email ?? "Welcome to BERA";
+    const avatar = user?.avatar ?? initialUser?.avatar;
     const firstName = name.split(" ")[0] ?? name;
     return (<header className="sticky top-0 z-30 border-b border-ink-100 bg-white/90 backdrop-blur-xl">
       <div className="container-x flex h-16 items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
+          <button type="button" aria-label="Open account navigation" onClick={() => window.dispatchEvent(new Event(ACCOUNT_SIDEBAR_TOGGLE))} className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-ink-200 text-ink-600 transition-colors hover:border-brand-300 hover:text-brand-700 lg:hidden">
+            <Menu className="size-5"/>
+          </button>
           {avatar ? (<Image src={avatar} alt={name} width={38} height={38} unoptimized className="size-9.5 rounded-full object-cover ring-2 ring-brand-100"/>) : (<span className="flex size-9.5 shrink-0 items-center justify-center rounded-full bg-brand-700 text-xs font-bold text-white ring-2 ring-brand-100">
               {initials(name)}
             </span>)}

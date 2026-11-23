@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getCategories } from "@/api/products";
-import { photo } from "@/lib/fallback/data";
+import { unsplashPhoto } from "@/lib/images";
 export const revalidate = 300;
 export default async function CategoriesPage() {
     const envelope = await getCategories();
@@ -12,7 +12,7 @@ export default async function CategoriesPage() {
     return (<>
       <section className="relative overflow-hidden bg-brand-950 py-16 text-white sm:py-20">
         <div className="absolute inset-0 opacity-25">
-          <Image src={photo("photo-1483985988355-763728e1935b", 1400)} alt="Fashion collection" fill sizes="100vw" className="object-cover"/>
+          <Image src={unsplashPhoto("photo-1483985988355-763728e1935b", 1400)} alt="Fashion collection" fill sizes="100vw" className="object-cover"/>
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-brand-950 via-brand-950/90 to-brand-800/40"/>
         <div className="container-x relative">

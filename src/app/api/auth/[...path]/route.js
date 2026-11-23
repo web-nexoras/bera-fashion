@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { API_TIMEOUT_MS, AUTH_COOKIE, SESSION_ID_COOKIE, backendUrl, isOfflineFallback, } from "@/lib/api/config";
+import { API_TIMEOUT_MS, AUTH_COOKIE, SESSION_ID_COOKIE, backendUrl } from "@/lib/api/config";
 import { decodeSession, encodeSession } from "@/lib/api/session";
 import { toEnvelope } from "@/lib/api/server";
-import { fallbackRequest } from "@/lib/fallback/handler";
 import { firstIssue, forgotPasswordSchema, loginSchema, registerSchema, } from "@/lib/validation";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,8 +18,6 @@ function publicSession(payload) {
 }
 async function callBackend(pathname, method, body, token) {
     const fullPath = pathname.startsWith("auth/") ? pathname : `auth/${pathname}`;
-    if (isOfflineFallback())
-        return (await fallbackRequest(method, fullPath, body));
     try {
         const response = await fetch(backendUrl(fullPath), {
             method,
@@ -35,27 +32,27 @@ async function callBackend(pathname, method, body, token) {
         return await toEnvelope(response);
     }
     catch {
-        if (process.env.NODE_ENV === "production") {
-            return { success: false, message: "Authentication service is temporarily unavailable.", data: null, status: 503 };
-        }
-        return (await fallbackRequest(method, fullPath, body));
+        return { success: false, message: "Authentication service is temporarily unavailable.", data: null, status: 503 };
     }
 }
 export async function GET(request, context) {
     const { path } = await context.params;
-    if (path[0] === "session") {
+    if (path.length === 1 && path[0] === "session") {
         const cookieStore = await cookies();
         const session = decodeSession(cookieStore.get(AUTH_COOKIE)?.value);
         return NextResponse.json(session
             ? { success: true, data: publicSession(session) }
             : { success: true, data: { user: null, isAuthenticated: false } });
     }
-    const envelope = await callBackend(path.join("/"), "GET");
-    return NextResponse.json(envelope, { status: envelope.status ?? 200 });
+    return NextResponse.json({ success: false, message: "Authentication endpoint not found.", data: null }, { status: 404 });
 }
 export async function POST(request, context) {
     const { path } = await context.params;
     const pathname = path.join("/");
+    const allowedPath = ["login", "register", "verify-email", "resend-otp", "forgot-password", "logout"].includes(pathname) || /^reset-password\/[^/]+$/.test(pathname) || /^verify-email\/[^/]+$/.test(pathname);
+    if (!allowedPath) {
+        return NextResponse.json({ success: false, message: "Authentication endpoint not found.", data: null }, { status: 404 });
+    }
     const body = (await request.json().catch(() => ({})));
     const cookieStore = await cookies();
     // Server-side validation — the browser schema is a convenience, this is the
@@ -120,13 +117,5 @@ export async function POST(request, context) {
             return response;
         }
     }
-    return NextResponse.json(envelope, { status: envelope.status ?? 200 });
-}
-export async function PUT(request, context) {
-    const { path } = await context.params;
-    const body = (await request.json().catch(() => ({})));
-    const cookieStore = await cookies();
-    const session = decodeSession(cookieStore.get(AUTH_COOKIE)?.value);
-    const envelope = await callBackend(path.join("/"), "PUT", body, session?.accessToken);
     return NextResponse.json(envelope, { status: envelope.status ?? 200 });
 }

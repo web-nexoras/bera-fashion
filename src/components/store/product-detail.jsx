@@ -1,16 +1,21 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Check, ChevronDown, Heart, RotateCcw, ShieldCheck, Star, Truck, } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/features/cart/context/CartContext.jsx";
+import { useAuth } from "@/features/auth/context/AuthContext.jsx";
+import { PENDING_ORDER_ITEM_KEY } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity";
 import { addToWishlist, removeFromWishlist } from "@/api/wishlist.js";
 import { cn, discountPercent, formatBDT, mainImage, productPrice } from "@/lib/utils";
 export function ProductDetail({ product }) {
+    const router = useRouter();
+    const { isAuthenticated } = useAuth();
     const { addItem } = useCart();
     const images = product.images?.length
         ? product.images
@@ -65,6 +70,26 @@ export function ProductDetail({ product }) {
         setBusy(true);
         await addItem(product._id, selectedVariant._id, quantity);
         setBusy(false);
+    };
+    const handleOrderNow = async () => {
+        if (!selectedVariant || stock === 0)
+            return;
+        sessionStorage.setItem(PENDING_ORDER_ITEM_KEY, JSON.stringify({
+            productId: product._id,
+            variantId: selectedVariant._id,
+            quantity,
+        }));
+        if (!isAuthenticated) {
+            router.push("/sign-up?next=%2Fcheckout");
+            return;
+        }
+        setBusy(true);
+        const added = await addItem(product._id, selectedVariant._id, quantity);
+        setBusy(false);
+        if (added) {
+            sessionStorage.removeItem(PENDING_ORDER_ITEM_KEY);
+            router.push("/checkout");
+        }
     };
     const sections = [
         {
@@ -210,6 +235,9 @@ export function ProductDetail({ product }) {
           <QuantityStepper value={quantity} onChange={setQuantity} min={1} max={Math.max(1, stock)}/>
           <Button size="lg" onClick={handleAdd} loading={busy} disabled={stock === 0} className="min-w-48">
             {stock === 0 ? "Sold out" : "Add to bag"}
+          </Button>
+          <Button size="lg" variant="outline" onClick={handleOrderNow} disabled={stock === 0 || busy} className="min-w-36">
+            Order now
           </Button>
           <Button variant="outline" size="icon" onClick={toggleFavorite} aria-label="Toggle wishlist" className="rounded-xl">
             <Heart className={cn("size-4", favorite && "fill-brand-700 text-brand-700")}/>

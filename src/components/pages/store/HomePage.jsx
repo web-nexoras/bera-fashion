@@ -7,10 +7,9 @@ import { ButtonLink } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getCategories, getProducts } from "@/api/products";
-import { photo } from "@/lib/fallback/data";
-export const dynamic = "force-static";
-const editorialImage = photo("photo-1490481651871-ab68de25d43d", 1100);
-const atelierImage = photo("photo-1516257984-b1b4d707412e", 1100);
+import { unsplashPhoto } from "@/lib/images";
+const editorialImage = unsplashPhoto("photo-1490481651871-ab68de25d43d", 1100);
+const atelierImage = unsplashPhoto("photo-1516257984-b1b4d707412e", 1100);
 export default async function HomePage() {
     const [categoriesEnvelope, featuredEnvelope, arrivalsEnvelope, bestEnvelope] = await Promise.all([
         getCategories(),

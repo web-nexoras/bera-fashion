@@ -10,10 +10,9 @@ import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackCustomers } from "@/lib/fallback/data";
 import { formatBDT, formatDate, initials } from "@/lib/utils";
 export default function AdminCustomersPage() {
-    const { data } = useAdminList(["admin", "customers"], "admin/customers?page=1&limit=100", fallbackCustomers);
+    const { data } = useAdminList(["admin", "customers"], "admin/customers?page=1&limit=100");
     const toggleBlock = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");

@@ -180,8 +180,8 @@ export default function TrackPage() {
 
                   {isAuthenticated ? (<ButtonLink href={`/orders/${order._id}`} variant="secondary" className="w-full">
                       View full order details <ArrowRight className="size-4"/>
-                    </ButtonLink>) : (<Link href="/login" className="block text-center text-xs font-semibold text-brand-700 hover:underline">
-                      Log in to manage this order
+                    </ButtonLink>) : (<Link href="/sign-in" className="block text-center text-xs font-semibold text-brand-700 hover:underline">
+                      Sign in to manage this order
                     </Link>)}
                 </div>
               </div>

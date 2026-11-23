@@ -11,11 +11,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { Field, Input, Select } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackCoupons } from "@/lib/fallback/data";
 import { formatBDT, formatDate, titleCase } from "@/lib/utils";
 export default function AdminCouponsPage() {
     const queryClient = useQueryClient();
-    const { data } = useAdminList(["admin", "coupons"], "coupons", fallbackCoupons);
+    const { data } = useAdminList(["admin", "coupons"], "coupons");
     const action = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");

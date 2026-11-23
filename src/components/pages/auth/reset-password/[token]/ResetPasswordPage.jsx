@@ -45,13 +45,13 @@ export default function ResetPasswordPage() {
         <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-ink-500">
           Your password has been changed. You can now sign in with your new credentials.
         </p>
-        <ButtonLink href="/login" size="lg" className="mt-8 w-full">
+        <ButtonLink href="/sign-in" size="lg" className="mt-8 w-full">
           Continue to sign in
         </ButtonLink>
       </div>);
     }
     return (<div className="animate-fade-up">
-      <Link href="/login" className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-500 transition-colors hover:text-brand-700">
+      <Link href="/sign-in" className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-500 transition-colors hover:text-brand-700">
         <ArrowLeft className="size-3.5"/> Back to sign in
       </Link>
       <h1 className="mt-6 font-display text-4xl font-bold tracking-tight text-ink-900">Set a new password</h1>

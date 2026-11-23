@@ -11,9 +11,8 @@ import { Field, Input } from "@/components/ui/input";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { registerSchema } from "@/lib/validation";
 const passwordRules = [
-    "At least 10 characters",
-    "One uppercase and one lowercase letter",
-    "One number and one special character",
+    "At least 6 characters",
+    "Mix letters and numbers",
 ];
 function safeNext(value) {
     if (!value || !value.startsWith("/") || value.startsWith("//"))
@@ -49,10 +48,8 @@ function RegisterForm() {
         if (!password)
             return false;
         if (ruleIndex === 0)
-            return password.length >= 10;
-        if (ruleIndex === 1)
-            return /[a-z]/.test(password) && /[A-Z]/.test(password);
-        return /\d/.test(password) && /[^A-Za-z0-9]/.test(password);
+            return password.length >= 6;
+        return /[A-Za-z]/.test(password) && /\d/.test(password);
     };
     const onSubmit = async (values) => {
         const result = await registerUser({
@@ -73,7 +70,7 @@ function RegisterForm() {
     };
     return (<div className="animate-fade-up">
       <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand-600">Join BERA</p>
-      <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-ink-900">Create your account</h1>
+      <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-ink-900">Sign up</h1>
       <p className="mt-2 text-sm text-ink-500">{requiresCheckout ? "Create an account to continue to checkout and place your order." : "A few details and you&apos;re part of the family."}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4" noValidate>
@@ -100,10 +97,20 @@ function RegisterForm() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Password" error={errors.password?.message} required>
-            <Input {...register("password")} type={showPassword ? "text" : "password"} placeholder="Create a strong password" autoComplete="new-password" aria-invalid={Boolean(errors.password)}/>
+            <div className="relative">
+              <Input {...register("password")} type={showPassword ? "text" : "password"} placeholder="Create a password" autoComplete="new-password" className="pr-10" aria-invalid={Boolean(errors.password)}/>
+              <button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-ink-400 transition-colors hover:text-brand-700">
+                {showPassword ? <EyeOff className="size-4"/> : <Eye className="size-4"/>}
+              </button>
+            </div>
           </Field>
           <Field label="Confirm password" error={errors.confirmPassword?.message} required>
-            <Input {...register("confirmPassword")} type={showPassword ? "text" : "password"} placeholder="Repeat password" autoComplete="new-password" aria-invalid={Boolean(errors.confirmPassword)}/>
+            <div className="relative">
+              <Input {...register("confirmPassword")} type={showPassword ? "text" : "password"} placeholder="Repeat password" autoComplete="new-password" className="pr-10" aria-invalid={Boolean(errors.confirmPassword)}/>
+              <button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-ink-400 transition-colors hover:text-brand-700">
+                {showPassword ? <EyeOff className="size-4"/> : <Eye className="size-4"/>}
+              </button>
+            </div>
           </Field>
         </div>
 
@@ -127,19 +134,14 @@ function RegisterForm() {
           {errors.terms?.message && <p className="mt-1 text-xs text-red-600">{errors.terms.message}</p>}
         </div>
 
-        <button type="button" onClick={() => setShowPassword((value) => !value)} className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-500 hover:text-brand-700">
-          {showPassword ? <EyeOff className="size-3.5"/> : <Eye className="size-3.5"/>}
-          {showPassword ? "Hide passwords" : "Show passwords"}
-        </button>
-
         <Button type="submit" size="lg" loading={isSubmitting} className="w-full">
-          Create account
+          Sign up
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-ink-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-bold text-brand-700 hover:text-brand-900 hover:underline">
+        <Link href="/sign-in" className="font-bold text-brand-700 hover:text-brand-900 hover:underline">
           Sign in
         </Link>
       </p>

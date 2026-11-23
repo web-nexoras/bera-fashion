@@ -52,10 +52,10 @@ const preferences = [
 export default function SettingsPage() {
     const { user } = useAuth();
     const [values, setValues] = useState({
-        orderUpdates: true,
-        securityAlerts: true,
+        orderUpdates: false,
+        securityAlerts: false,
         promotions: false,
-        newsletter: true,
+        newsletter: false,
     });
     const { register, handleSubmit, reset, formState: { errors, isSubmitting }, } = useForm({
         resolver: zodResolver(schema),
@@ -145,6 +145,6 @@ export default function SettingsPage() {
 }
 function Toggle({ checked, onChange, label, }) {
     return (<button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)} className={cn("relative h-6 w-11 shrink-0 rounded-full transition-colors", checked ? "bg-brand-700" : "bg-ink-200")}>
-      <span className={cn("absolute top-0.5 size-5 rounded-full bg-white shadow-sm transition-transform", checked ? "translate-x-5.5" : "translate-x-0.5")}/>
+      <span className={cn("absolute top-0.5 size-5 rounded-full bg-white shadow-sm transition-transform", checked ? "translate-x-5" : "translate-x-0.5")}/>
     </button>);
 }

@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import { ArrowRight, Banknote, ClipboardList, PackageSearch, Plus, ShoppingCart, Users, Warehouse, Boxes, } from "lucide-react";
-import { toast } from "sonner";
 import { useAdminList, useAdminQuery, entityName } from "@/components/admin/admin-data";
 import { Skeleton } from "@/components/ui/feedback";
 import { StatCard } from "@/components/admin/stat-card";
@@ -12,7 +11,6 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/data-table";
 import { PageHeading } from "@/components/ui/section-heading";
 import { ORDER_STATUSES } from "@/lib/constants";
-import { fallbackDashboardStats, fallbackMonthlySales, fallbackOrders, fallbackProducts } from "@/lib/fallback/data";
 import { formatBDT, formatDate, titleCase } from "@/lib/utils";
 
 const RevenueAreaChart = dynamic(() => import("@/components/admin/charts").then((mod) => mod.RevenueAreaChart), {
@@ -24,23 +22,14 @@ const OrdersBarChart = dynamic(() => import("@/components/admin/charts").then((m
 const OrderStatusDonut = dynamic(() => import("@/components/admin/charts").then((mod) => mod.OrderStatusDonut), {
   loading: () => <Skeleton className="h-[260px] w-full" />,
 });
-const fallbackLowStock = fallbackProducts
-    .flatMap((product) => product.variants
-    .filter((variant) => variant.stock > 0 && variant.stock <= 8)
-    .map((variant) => ({
-    ...variant,
-    productName: product.name,
-    productImage: product.images[0]?.url,
-})))
-    .slice(0, 6);
 const number = (value) => new Intl.NumberFormat("en-BD").format(value || 0);
 export default function AdminDashboardPage() {
-    const statsQuery = useAdminQuery(["admin", "dashboard"], "admin/dashboard", fallbackDashboardStats);
-    const salesQuery = useAdminQuery(["admin", "dashboard", "monthly-sales"], "admin/dashboard/monthly-sales", fallbackMonthlySales);
-    const ordersQuery = useAdminList(["admin", "orders", "dashboard"], "orders/admin/all?page=1&limit=50", fallbackOrders);
-    const stockQuery = useAdminList(["admin", "inventory", "low-stock"], "inventory/low-stock", fallbackLowStock);
+    const statsQuery = useAdminQuery(["admin", "dashboard"], "admin/dashboard");
+    const salesQuery = useAdminQuery(["admin", "dashboard", "monthly-sales"], "admin/dashboard/monthly-sales");
+    const ordersQuery = useAdminList(["admin", "orders", "dashboard"], "orders/admin/all?page=1&limit=50");
+    const stockQuery = useAdminList(["admin", "inventory", "low-stock"], "inventory/low-stock");
     const stats = statsQuery.data;
-    const sales = Array.isArray(salesQuery.data) ? salesQuery.data : fallbackMonthlySales;
+    const sales = Array.isArray(salesQuery.data) ? salesQuery.data : [];
     const orders = ordersQuery.data.items;
     const lowStock = stockQuery.data.items.slice(0, 6);
     const statusSlices = useMemo(() => {
@@ -53,21 +42,16 @@ export default function AdminDashboardPage() {
         });
         return ORDER_STATUSES.map((status) => ({ name: titleCase(status), value: counts[status] ?? 0 }));
     }, [orders]);
-    useEffect(() => {
-        if (statsQuery.isError || salesQuery.isError || ordersQuery.isError) {
-            toast.error("Some live metrics are unavailable — showing cached data.");
-        }
-    }, [statsQuery.isError, salesQuery.isError, ordersQuery.isError]);
     return (<div className="space-y-6">
       <PageHeading title="Dashboard" description="A live overview of store performance, orders and inventory health." action={<ButtonLink href="/admin/products/new" size="md">
             <Plus className="size-4"/> Add product
           </ButtonLink>}/>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total revenue" value={formatBDT(stats.totalRevenue)} icon={<Banknote className="size-5"/>} growth={stats.revenueGrowth} hint={`${formatBDT(stats.todaysRevenue)} today`}/>
-        <StatCard label="Total orders" value={number(stats.totalOrders)} icon={<ShoppingCart className="size-5"/>} growth={stats.orderGrowth} hint={`${stats.pendingOrders} awaiting fulfilment`}/>
-        <StatCard label="Customers" value={number(stats.totalCustomers)} icon={<Users className="size-5"/>} growth={stats.customerGrowth} hint="Registered accounts"/>
-        <StatCard label="Active products" value={number(stats.totalProducts)} icon={<Boxes className="size-5"/>} hint={`${stats.lowStockItems} variants low in stock`} trend="flat"/>
+        <StatCard label="Total revenue" value={stats ? formatBDT(stats.totalRevenue) : "—"} icon={<Banknote className="size-5"/>} growth={stats?.revenueGrowth} hint={stats ? `${formatBDT(stats.todaysRevenue)} today` : "Live data unavailable"}/>
+        <StatCard label="Total orders" value={stats ? number(stats.totalOrders) : "—"} icon={<ShoppingCart className="size-5"/>} growth={stats?.orderGrowth} hint={stats ? `${stats.pendingOrders} awaiting fulfilment` : "Live data unavailable"}/>
+        <StatCard label="Customers" value={stats ? number(stats.totalCustomers) : "—"} icon={<Users className="size-5"/>} growth={stats?.customerGrowth} hint={stats ? "Registered accounts" : "Live data unavailable"}/>
+        <StatCard label="Active products" value={stats ? number(stats.totalProducts) : "—"} icon={<Boxes className="size-5"/>} hint={stats ? `${stats.lowStockItems} variants low in stock` : "Live data unavailable"} trend="flat"/>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.65fr_1fr]">
@@ -147,8 +131,8 @@ export default function AdminDashboardPage() {
         <CardBody className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {[
             { href: "/admin/products/new", label: "Add a product", hint: "Create a new listing", icon: Plus },
-            { href: "/admin/orders", label: "Review orders", hint: `${stats.pendingOrders} pending`, icon: ClipboardList },
-            { href: "/admin/inventory", label: "Adjust stock", hint: `${stats.lowStockItems} low items`, icon: Warehouse },
+            { href: "/admin/orders", label: "Review orders", hint: stats ? `${stats.pendingOrders} pending` : "Open orders", icon: ClipboardList },
+            { href: "/admin/inventory", label: "Adjust stock", hint: stats ? `${stats.lowStockItems} low items` : "View stock", icon: Warehouse },
             { href: "/admin/reports", label: "View reports", hint: "Sales & inventory", icon: Banknote },
         ].map((action) => {
             const Icon = action.icon;

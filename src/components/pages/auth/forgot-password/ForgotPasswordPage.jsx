@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
           The link is valid for a limited time.
         </p>
         <div className="mt-8 space-y-3">
-          <ButtonLink href="/login" size="lg" className="w-full">
+          <ButtonLink href="/sign-in" size="lg" className="w-full">
             Back to sign in
           </ButtonLink>
           <button type="button" onClick={() => setSentTo(null)} className="text-xs font-semibold text-brand-700 hover:underline">
@@ -48,7 +48,7 @@ export default function ForgotPasswordPage() {
       </div>);
     }
     return (<div className="animate-fade-up">
-      <Link href="/login" className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-500 transition-colors hover:text-brand-700">
+      <Link href="/sign-in" className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-500 transition-colors hover:text-brand-700">
         <ArrowLeft className="size-3.5"/> Back to sign in
       </Link>
       <h1 className="mt-6 font-display text-4xl font-bold tracking-tight text-ink-900">Forgot your password?</h1>
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
 
       <p className="mt-7 text-center text-sm text-ink-500">
         Remembered it?{" "}
-        <Link href="/login" className="font-bold text-brand-700 hover:underline">
+        <Link href="/sign-in" className="font-bold text-brand-700 hover:underline">
           Sign in
         </Link>
       </p>

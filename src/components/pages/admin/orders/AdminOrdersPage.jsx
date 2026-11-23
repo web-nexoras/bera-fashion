@@ -12,7 +12,6 @@ import { Modal } from "@/components/ui/modal";
 import { Pagination } from "@/components/ui/pagination";
 import { PageHeading } from "@/components/ui/section-heading";
 import { ORDER_STATUSES, PAYMENT_STATUSES } from "@/lib/constants";
-import { fallbackOrders } from "@/lib/fallback/data";
 import { cn, formatBDT, formatDateTime, titleCase } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 export default function AdminOrdersPage() {
@@ -27,7 +26,7 @@ export default function AdminOrdersPage() {
     const [detail, setDetail] = useState(null);
     const [statusTarget, setStatusTarget] = useState(null);
     const [nextStatus, setNextStatus] = useState("confirmed");
-    const { data, isFetching, refetch } = useAdminList(["admin", "orders", "all"], "orders/admin/all?page=1&limit=100", fallbackOrders);
+    const { data, isFetching, refetch } = useAdminList(["admin", "orders", "all"], "orders/admin/all?page=1&limit=100");
     const updateStatus = useAdminAction();
     const filtered = useMemo(() => {
         const term = search.trim().toLowerCase();

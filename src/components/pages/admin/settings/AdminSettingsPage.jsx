@@ -9,12 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/input";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackStoreSettings } from "@/lib/fallback/data";
+const emptySettings = {
+    storeName: "", tagline: "", email: "", phone: "", address: "", currency: "BDT",
+    freeShippingThreshold: 0, maintenanceMode: false, announcements: "",
+};
 export default function AdminSettingsPage() {
     const queryClient = useQueryClient();
-    const { data } = useAdminQuery(["admin", "settings"], "admin/settings", fallbackStoreSettings);
+    const { data } = useAdminQuery(["admin", "settings"], "admin/settings");
     const saveSettings = useAdminAction();
-    const [form, setForm] = useState(fallbackStoreSettings);
+    const [form, setForm] = useState(emptySettings);
     const [loadedSettings, setLoadedSettings] = useState(null);
     // Adopt fetched settings during render (React's documented "adjust state when
     // props change" pattern) so the form is never one render behind the query.

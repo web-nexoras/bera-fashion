@@ -7,12 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/feedback";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getCategories, getCategoryBySlug, getProducts } from "@/api/products";
-import { fallbackCategories } from "@/lib/fallback/data";
 import { buildQuery } from "@/lib/utils";
 export const revalidate = 300;
-export async function generateStaticParams() {
-    return fallbackCategories.map((category) => ({ slug: category.slug }));
-}
 export default async function CategoryPage({ params, }) {
     const { slug } = await params;
     const [categoryEnvelope, productsEnvelope, categoriesEnvelope] = await Promise.all([

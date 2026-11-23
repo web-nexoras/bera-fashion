@@ -3,7 +3,7 @@ import { Clock3, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { ContactForm } from "@/components/store/contact-form";
 import { Badge } from "@/components/ui/badge";
 import { SITE } from "@/lib/constants";
-import { photo } from "@/lib/fallback/data";
+import { unsplashPhoto } from "@/lib/images";
 export const dynamic = "force-static";
 const infoCards = [
     { icon: MapPin, label: "Visit us", lines: [SITE.address] },
@@ -16,7 +16,7 @@ export default function ContactPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-brand-950 py-16 text-white sm:py-20">
         <div className="absolute inset-0 opacity-20">
-          <Image src={photo("photo-1521737711867-e3b97375f902", 1400)} alt="Our team" fill sizes="100vw" className="object-cover"/>
+          <Image src={unsplashPhoto("photo-1521737711867-e3b97375f902", 1400)} alt="Our team" fill sizes="100vw" className="object-cover"/>
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-brand-950 via-brand-950/90 to-brand-800/40"/>
         <div className="container-x relative">
@@ -48,7 +48,7 @@ export default function ContactPage() {
 
         <aside className="space-y-5">
           <div className="relative min-h-64 overflow-hidden rounded-2xl">
-            <Image src={photo("photo-1441986300917-64674bd600d8", 900)} alt="BERA store" fill sizes="(max-width: 1024px) 100vw, 30vw" className="object-cover"/>
+            <Image src={unsplashPhoto("photo-1441986300917-64674bd600d8", 900)} alt="BERA store" fill sizes="(max-width: 1024px) 100vw, 30vw" className="object-cover"/>
             <div className="absolute inset-0 bg-gradient-to-t from-brand-950/80 to-transparent"/>
             <div className="absolute inset-x-0 bottom-0 p-5">
               <p className="font-display text-xl font-bold text-white">BERA Studio</p>

@@ -19,9 +19,10 @@ export const ROUTES = {
     track: "/track",
     account: "/account",
     admin: "/admin",
-    login: "/login",
-    register: "/register",
+    login: "/sign-in",
+    register: "/sign-up",
 };
+export const PENDING_ORDER_ITEM_KEY = "bera:pending-order-item";
 export const ORDER_STATUSES = [
     "pending",
     "confirmed",
@@ -43,7 +44,3 @@ export const BANGLADESH_DIVISIONS = [
     "Rangpur",
     "Mymensingh",
 ];
-export const REVALIDATE = {
-    products: Number(process.env.REVALIDATE_PRODUCTS ?? 60),
-    category: Number(process.env.REVALIDATE_CATEGORY ?? 300),
-};

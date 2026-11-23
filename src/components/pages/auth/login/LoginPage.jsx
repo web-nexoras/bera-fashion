@@ -79,8 +79,8 @@ function LoginForm() {
 
       <p className="mt-7 text-center text-sm text-ink-500">
         New to BERA?{" "}
-        <Link href="/register" className="font-bold text-brand-700 hover:text-brand-900 hover:underline">
-          Create an account
+        <Link href="/sign-up" className="font-bold text-brand-700 hover:text-brand-900 hover:underline">
+          Sign up
         </Link>
       </p>
     </div>);

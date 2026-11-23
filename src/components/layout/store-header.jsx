@@ -69,7 +69,7 @@ export function StoreHeader({ categories = [] }) {
             <button onClick={() => setSearchOpen((value) => !value)} className="rounded-xl p-2.5 text-ink-600 hover:bg-brand-50 hover:text-brand-700" aria-label="Search">
               <Search className="size-5"/>
             </button>
-            <Link href={user?.role === "admin" ? "/admin" : user ? "/account" : "/login"} className="hidden rounded-xl p-2.5 text-ink-600 hover:bg-brand-50 hover:text-brand-700 sm:block" title={user ? user.name : "Sign in"}>
+            <Link href={user?.role === "admin" ? "/admin" : user ? "/account" : "/sign-in"} className="hidden rounded-xl p-2.5 text-ink-600 hover:bg-brand-50 hover:text-brand-700 sm:block" title={user ? user.name : "Sign in"}>
               {user ? (<span className="flex size-5 items-center justify-center rounded-full bg-brand-700 text-[9px] font-bold text-white">
                   {initials(user.name)}
                 </span>) : (<UserRound className="size-5"/>)}
@@ -105,12 +105,16 @@ export function StoreHeader({ categories = [] }) {
                 {category.name}
               </Link>))}
             <div className="mt-4 flex gap-2 pb-4">
-              <Link href="/login" className="flex-1 rounded-xl border border-ink-200 py-2.5 text-center text-sm font-semibold">
-                Sign in
-              </Link>
-              <Link href={user?.role === "admin" ? "/admin" : "/account"} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-700 py-2.5 text-sm font-semibold text-white">
-                <LayoutDashboard className="size-4"/> Dashboard
-              </Link>
+              {user ? (<Link href={user.role === "admin" ? "/admin" : "/account"} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-700 py-2.5 text-sm font-semibold text-white">
+                  <LayoutDashboard className="size-4"/> Dashboard
+                </Link>) : (<>
+                  <Link href="/sign-in" className="flex-1 rounded-xl border border-ink-200 py-2.5 text-center text-sm font-semibold">
+                    Sign in
+                  </Link>
+                  <Link href="/sign-up" className="flex-1 rounded-xl bg-brand-700 py-2.5 text-center text-sm font-semibold text-white">
+                    Sign up
+                  </Link>
+                </>)}
             </div>
           </nav>
         </div>)}

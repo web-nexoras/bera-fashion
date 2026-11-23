@@ -5,11 +5,7 @@ import { ProductCard } from "@/components/store/product-card";
 import { ProductDetail } from "@/components/store/product-detail";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getProductBySlug, getRelatedProducts } from "@/api/products";
-import { fallbackProducts } from "@/lib/fallback/data";
 export const revalidate = 60;
-export async function generateStaticParams() {
-    return fallbackProducts.slice(0, 6).map((product) => ({ slug: product.slug }));
-}
 export default async function ProductDetailPage({ params, }) {
     const { slug } = await params;
     const [productEnvelope, relatedEnvelope] = await Promise.all([

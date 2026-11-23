@@ -3,11 +3,11 @@ import { Compass, HeartHandshake, Leaf, Sparkles, Users, } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { photo } from "@/lib/fallback/data";
+import { unsplashPhoto } from "@/lib/images";
 export const dynamic = "force-static";
-const storyImage = photo("photo-1441986300917-64674bd600d8", 1200);
-const craftImage = photo("photo-1598033129183-c4f50c736f10", 1100);
-const teamImage = photo("photo-1521737711867-e3b97375f902", 1100);
+const storyImage = unsplashPhoto("photo-1441986300917-64674bd600d8", 1200);
+const craftImage = unsplashPhoto("photo-1598033129183-c4f50c736f10", 1100);
+const teamImage = unsplashPhoto("photo-1521737711867-e3b97375f902", 1100);
 const values = [
     {
         icon: Sparkles,

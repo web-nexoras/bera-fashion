@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackMonthlySales, fallbackProducts, fallbackStoreSettings } from "@/lib/fallback/data";
 import { formatBDT } from "@/lib/utils";
 
 const RevenueAreaChart = dynamic(() => import("@/components/admin/charts").then((mod) => mod.RevenueAreaChart), {
@@ -20,25 +19,19 @@ const RevenueAreaChart = dynamic(() => import("@/components/admin/charts").then(
 const OrdersBarChart = dynamic(() => import("@/components/admin/charts").then((mod) => mod.OrdersBarChart), {
   loading: () => <Skeleton className="h-[300px] w-full" />,
 });
-const fallbackInventoryReport = {
-    totalVariants: fallbackProducts.reduce((sum, product) => sum + product.variants.length, 0),
-    lowStock: 14,
-    outOfStock: 6,
-    totalValue: 2_486_000,
-};
 const monthDate = (month) => {
     const year = new Date().getFullYear();
     const index = new Date(`${month} 1, ${year}`).getMonth();
     return `${year}-${String(index + 1).padStart(2, "0")}-01`;
 };
 export default function AdminReportsPage() {
-    const salesQuery = useAdminQuery(["admin", "reports", "sales"], "admin/reports/sales", fallbackMonthlySales);
-    const inventoryQuery = useAdminQuery(["admin", "reports", "inventory"], "admin/reports/inventory", fallbackInventoryReport);
+    const salesQuery = useAdminQuery(["admin", "reports", "sales"], "admin/reports/sales");
+    const inventoryQuery = useAdminQuery(["admin", "reports", "inventory"], "admin/reports/inventory");
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
-    const sales = Array.isArray(salesQuery.data) ? salesQuery.data : fallbackMonthlySales;
+    const sales = salesQuery.data;
     const inventory = inventoryQuery.data;
-    const filtered = useMemo(() => sales.filter((row) => {
+    const filtered = useMemo(() => (Array.isArray(sales) ? sales : []).filter((row) => {
         const date = monthDate(row.month);
         return (!from || date >= from) && (!to || date <= to);
     }), [sales, from, to]);
@@ -62,7 +55,7 @@ export default function AdminReportsPage() {
         toast.success("Sales report exported as CSV.");
     };
     return (<div className="space-y-6">
-      <PageHeading title="Reports" description="Sales performance and inventory health at a glance." action={<Button onClick={exportCsv}>
+      <PageHeading title="Reports" description="Sales performance and inventory health at a glance." action={<Button onClick={exportCsv} disabled={!sales?.length}>
             <Download className="size-4"/> Export CSV
           </Button>}/>
 
@@ -86,10 +79,10 @@ export default function AdminReportsPage() {
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Revenue in range" value={formatBDT(totalRevenue)} icon={<Banknote className="size-5"/>} hint={`${fallbackStoreSettings.currency} · filtered period`} trend="flat"/>
-        <StatCard label="Orders in range" value={totalOrders.toLocaleString("en-BD")} icon={<ClipboardList className="size-5"/>} hint="Across selected months" trend="flat"/>
-        <StatCard label="Average order value" value={formatBDT(Math.round(averageOrder))} icon={<TrendingUp className="size-5"/>} hint="Revenue ÷ orders" trend="flat"/>
-        <StatCard label="Inventory value" value={formatBDT(inventory.totalValue)} icon={<Package className="size-5"/>} hint="At current retail prices" trend="flat"/>
+        <StatCard label="Revenue in range" value={Array.isArray(sales) ? formatBDT(totalRevenue) : "—"} icon={<Banknote className="size-5"/>} hint="BDT · filtered period" trend="flat"/>
+        <StatCard label="Orders in range" value={Array.isArray(sales) ? totalOrders.toLocaleString("en-BD") : "—"} icon={<ClipboardList className="size-5"/>} hint="Across selected months" trend="flat"/>
+        <StatCard label="Average order value" value={Array.isArray(sales) ? formatBDT(Math.round(averageOrder)) : "—"} icon={<TrendingUp className="size-5"/>} hint="Revenue ÷ orders" trend="flat"/>
+        <StatCard label="Inventory value" value={inventory ? formatBDT(inventory.totalValue) : "—"} icon={<Package className="size-5"/>} hint="At current retail prices" trend="flat"/>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-2">
@@ -111,10 +104,10 @@ export default function AdminReportsPage() {
         <CardHeader title="Inventory report" description="Snapshot of catalogue stock health"/>
         <CardBody className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Total variants", value: inventory.totalVariants, note: "Across all products", tone: "text-ink-900" },
-            { label: "Low stock", value: inventory.lowStock, note: "Needs restocking", tone: "text-amber-600" },
-            { label: "Out of stock", value: inventory.outOfStock, note: "Currently unavailable", tone: "text-red-600" },
-            { label: "Stock value", value: formatBDT(inventory.totalValue), note: "Retail valuation", tone: "text-brand-700" },
+            { label: "Total variants", value: inventory?.totalVariants ?? "—", note: "Across all products", tone: "text-ink-900" },
+            { label: "Low stock", value: inventory?.lowStock ?? "—", note: "Needs restocking", tone: "text-amber-600" },
+            { label: "Out of stock", value: inventory?.outOfStock ?? "—", note: "Currently unavailable", tone: "text-red-600" },
+            { label: "Stock value", value: inventory ? formatBDT(inventory.totalValue) : "—", note: "Retail valuation", tone: "text-brand-700" },
         ].map((item) => (<div key={item.label} className="rounded-xl border border-ink-100 p-4">
               <p className="text-xs font-semibold uppercase tracking-wider text-ink-500">{item.label}</p>
               <p className={`mt-2 font-display text-2xl font-bold ${item.tone}`}>{item.value}</p>

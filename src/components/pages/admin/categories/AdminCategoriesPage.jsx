@@ -11,11 +11,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { PageHeading } from "@/components/ui/section-heading";
-import { fallbackCategories } from "@/lib/fallback/data";
 import { slugify } from "@/lib/utils";
 export default function AdminCategoriesPage() {
     const queryClient = useQueryClient();
-    const { data } = useAdminQuery(["admin", "categories"], "categories", fallbackCategories);
+    const { data: liveCategories = [] } = useAdminQuery(["admin", "categories"], "categories");
     const action = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");
@@ -23,7 +22,7 @@ export default function AdminCategoriesPage() {
     const [editing, setEditing] = useState(null);
     const [target, setTarget] = useState(null);
     const [form, setForm] = useState({ name: "", description: "", isActive: true });
-    const categories = overrides ?? data;
+    const categories = overrides ?? liveCategories;
     const filtered = useMemo(() => {
         const term = search.trim().toLowerCase();
         return categories.filter((category) => !term || category.name.toLowerCase().includes(term) || category.slug.includes(term));

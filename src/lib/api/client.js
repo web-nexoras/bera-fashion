@@ -23,8 +23,3 @@ export async function clientFetch(path, options = {}) {
         };
     }
 }
-/** Thin helper for React Query query keys and mutations. */
-export async function clientData(path, fallback) {
-    const envelope = await clientFetch(path);
-    return envelope.success && envelope.data !== undefined ? envelope.data : fallback;
-}

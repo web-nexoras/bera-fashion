@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import {
@@ -27,11 +27,14 @@ export function CartProvider({ children }) {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [cart, setCart] = useState(emptyCart);
   const [isLoading, setIsLoading] = useState(true);
+  const mutationVersion = useRef(0);
+  const pendingMutations = useRef(0);
 
   const refresh = useCallback(async () => {
+    const version = mutationVersion.current;
     try {
       const response = await getCart();
-      if (response.success && response.data) setCart(response.data);
+      if (version === mutationVersion.current && pendingMutations.current === 0 && response.success && response.data) setCart(response.data);
     } finally {
       setIsLoading(false);
     }
@@ -42,9 +45,15 @@ export function CartProvider({ children }) {
   }, [refresh, authLoading, isAuthenticated]);
 
   const mutate = useCallback(async (request) => {
-    const response = await request;
-    if (response.success && response.data) setCart(response.data);
-    return response;
+    const version = ++mutationVersion.current;
+    pendingMutations.current += 1;
+    try {
+      const response = await request;
+      if (version === mutationVersion.current && response.success && response.data) setCart(response.data);
+      return response;
+    } finally {
+      pendingMutations.current -= 1;
+    }
   }, []);
 
   const addItem = useCallback(async (productId, variantId, quantity = 1) => {
