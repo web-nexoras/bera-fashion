@@ -14,8 +14,10 @@ export const strongPassword = z
     .string()
     .min(6, "Use at least 6 characters")
     .max(128, "Password is too long")
-    .regex(/[A-Za-z]/, "Include at least one letter")
-    .regex(/\d/, "Include at least one number");
+    .regex(/[A-Z]/, "Include at least one uppercase letter")
+    .regex(/[a-z]/, "Include at least one lowercase letter")
+    .regex(/\d/, "Include at least one number")
+    .regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/, "Include at least one special character");
 export const loginSchema = z.object({
     email,
     password: z

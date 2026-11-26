@@ -43,17 +43,20 @@ export default function ReturnsPage() {
     };
     const onSubmit = async (values) => {
         const order = (ordersQuery.data ?? []).find((item) => item._id === values.orderId);
+        const firstItem = order?.items?.[0];
+        if (!firstItem?._id) {
+            toast.error("No returnable item found for this order.");
+            return;
+        }
         const response = await requestReturn({
             orderId: values.orderId,
-            orderNumber: order?.orderNumber,
-            reason: values.details,
-            reasonType: values.reasonType,
-            items: order?.items.slice(0, 1).map((item) => ({
-                name: item.name,
-                quantity: 1,
-                reason: values.reasonType,
-            })) ?? [],
-            refundAmount: order?.pricing.total ?? 0,
+            items: [
+                {
+                    orderItemId: firstItem._id,
+                    quantity: 1,
+                    reason: `${values.reasonType}: ${values.details}`.slice(0, 500),
+                },
+            ],
         });
         if (!response.success) {
             toast.error(response.message ?? "We couldn't submit your return request.");

@@ -10,9 +10,10 @@ import { toast } from "sonner";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { resetPassword } from "@/api/auth.js";
+import { strongPassword } from "@/lib/validation";
 const schema = z
     .object({
-    password: z.string().min(8, "Use at least 8 characters"),
+    password: strongPassword,
     confirmPassword: z.string().min(1, "Please confirm your password"),
 })
     .refine((values) => values.password === values.confirmPassword, {
@@ -61,13 +62,13 @@ export default function ResetPasswordPage() {
         <Field label="New password" error={errors.password?.message} required>
           <div className="relative">
             <LockKeyhole className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-400"/>
-            <Input {...register("password")} type="password" autoComplete="new-password" placeholder="At least 8 characters" className="pl-10"/>
+            <Input {...register("password")} type="password" autoComplete="new-password" placeholder="Create a strong password" className="pl-10"/>
           </div>
         </Field>
         <Field label="Confirm new password" error={errors.confirmPassword?.message} required>
           <div className="relative">
             <LockKeyhole className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-400"/>
-            <Input {...register("confirmPassword")} type="password" autoComplete="new-password" placeholder="Repeat your password" className="pl-10"/>
+            <Input {...register("confirmPassword")} type="password" autoComplete="new-password" placeholder="Re-enter your new password" className="pl-10"/>
           </div>
         </Field>
         <Button type="submit" size="lg" loading={isSubmitting} className="w-full">

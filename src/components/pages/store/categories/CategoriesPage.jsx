@@ -10,17 +10,17 @@ export default async function CategoriesPage() {
     const envelope = await getCategories();
     const categories = envelope.data ?? [];
     return (<>
-      <section className="relative overflow-hidden bg-brand-950 py-16 text-white sm:py-20">
-        <div className="absolute inset-0 opacity-25">
-          <Image src={unsplashPhoto("photo-1483985988355-763728e1935b", 1400)} alt="Fashion collection" fill sizes="100vw" className="object-cover"/>
+      <section className="relative overflow-hidden bg-brand-950 py-16 text-white sm:py-22">
+        <div className="absolute inset-0 opacity-30">
+          <Image src={unsplashPhoto("photo-1483985988355-763728e1935b", 1600)} alt="Fashion collection" fill sizes="100vw" className="object-cover"/>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-950 via-brand-950/90 to-brand-800/40"/>
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-950 via-brand-950/90 to-brand-800/45"/>
         <div className="container-x relative">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-gold-300">The collections</p>
-          <h1 className="mt-3 max-w-2xl font-display text-4xl font-bold tracking-tight sm:text-5xl">
+          <h1 className="mt-3 max-w-2xl font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Shop by category
           </h1>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-brand-50/80">
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/85">
             Explore the BERA world, one thoughtfully curated collection at a time.
           </p>
         </div>
@@ -29,7 +29,7 @@ export default async function CategoriesPage() {
       <section className="container-x py-14 sm:py-20">
         <SectionHeading eyebrow="Browse the edit" title="Everyday, elevated" description="Find exactly what you're looking for — or something you didn't know you needed."/>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category, index) => (<Link key={category._id} href={`/categories/${category.slug}`} className="group surface overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lift">
+          {categories.map((category, index) => (<Link key={category._id} href={`/categories/${category.slug}`} className="group surface card-3d overflow-hidden">
               <div className="relative aspect-16/10 overflow-hidden bg-brand-50">
                 {category.image && (<Image src={category.image} alt={category.name} fill priority={index < 3} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-105"/>)}
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-950/50 to-transparent"/>

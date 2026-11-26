@@ -11,7 +11,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { EmptyState, Skeleton } from "@/components/ui/feedback";
 import { PageHeading } from "@/components/ui/section-heading";
-import { cancelMyOrder } from "@/api/orders.js";
+import { cancelMyOrder, getMyOrder } from "@/api/orders.js";
 import { formatBDT, formatDateTime, titleCase } from "@/lib/utils";
 export default function OrderDetailPage() {
     const params = useParams();
@@ -30,7 +30,7 @@ export default function OrderDetailPage() {
         if (!order)
             return;
         setCancelling(true);
-        const response = await cancelMyOrder(order._id);
+        const response = await cancelMyOrder(order._id, { reason: "Cancelled by customer" });
         setCancelling(false);
         if (!response.success) {
             toast.error(response.message ?? "We couldn't cancel this order.");
@@ -111,7 +111,7 @@ export default function OrderDetailPage() {
                     </p>
                     <p className="mt-1 text-[11px] text-ink-400">SKU: {item.sku}</p>
                   </div>
-                  <p className="shrink-0 text-sm font-bold text-ink-900">{formatBDT(item.subtotal)}</p>
+                  <p className="shrink-0 text-sm font-bold text-ink-900">{formatBDT(item.totalPrice ?? item.subtotal ?? item.price * item.quantity)}</p>
                 </div>))}
             </CardBody>
           </Card>

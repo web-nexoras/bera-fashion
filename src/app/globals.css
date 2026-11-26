@@ -32,16 +32,23 @@
   --color-canvas: #fbfafb;
   --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
   --shadow-soft: 0 12px 36px -16px rgb(44 9 23 / 0.22);
-  --shadow-lift: 0 24px 60px -20px rgb(44 9 23 / 0.3);
-  --animate-fade-up: fade-up 0.5s ease-out both;
+  --shadow-lift: 0 24px 60px -20px rgb(44 9 23 / 0.34);
+  --shadow-3d: 0 20px 45px -15px rgb(44 9 23 / 0.32), 0 8px 16px -8px rgb(122 31 61 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.18);
+  --animate-fade-up: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-float: float-slow 5.5s ease-in-out infinite;
   --animate-marquee: marquee 26s linear infinite;
   --animate-banner-in: banner-in 0.45s ease-out both;
   --animate-banner-progress: banner-progress 4.2s linear both;
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes marquee {
@@ -97,6 +104,27 @@
   border: 1px solid var(--color-ink-100);
   border-radius: 1rem;
   box-shadow: var(--shadow-soft);
+}
+
+@utility card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  &:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--shadow-3d);
+  }
+}
+
+@utility btn-3d {
+  box-shadow: 0 10px 24px -10px rgb(122 31 61 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.22);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px -10px rgb(122 31 61 / 0.65), inset 0 1px 0 rgb(255 255 255 / 0.3);
+  }
+  &:active {
+    transform: translateY(0px) scale(0.98);
+  }
 }
 
 @utility no-scrollbar {

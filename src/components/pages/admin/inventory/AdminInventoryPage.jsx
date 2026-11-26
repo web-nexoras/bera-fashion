@@ -47,7 +47,8 @@ export default function AdminInventoryPage() {
             body: {
                 variantId: target._id,
                 quantity,
-                type: form.type,
+                type: "adjustment",
+                direction: form.type === "decrement" ? "decrease" : "increase",
                 notes: form.notes.trim() || undefined,
             },
         }, {

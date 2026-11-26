@@ -46,6 +46,8 @@ export function ProductForm({ initial, loading = false, pending = false, onSubmi
         const nextErrors = {};
         if (!values.name.trim())
             nextErrors.name = "A product name is required.";
+        if (values.description.trim().length < 10)
+            nextErrors.description = "Description must be at least 10 characters.";
         if (!values.sku.trim())
             nextErrors.sku = "A SKU is required.";
         if (!values.category)
@@ -56,7 +58,13 @@ export function ProductForm({ initial, loading = false, pending = false, onSubmi
         setErrors(nextErrors);
         if (Object.keys(nextErrors).length)
             return;
-        onSubmit({ ...values, name: values.name.trim(), sku: values.sku.trim().toUpperCase() });
+        onSubmit({
+            ...values,
+            name: values.name.trim(),
+            description: values.description.trim(),
+            sku: values.sku.trim().toUpperCase(),
+            brand: values.brand || null,
+        });
     };
     const flags = [
         { key: "isFeatured", label: "Featured product" },
@@ -76,7 +84,7 @@ export function ProductForm({ initial, loading = false, pending = false, onSubmi
                   <Input value={values.sku} onChange={(event) => set("sku", event.target.value)} placeholder="BF-0001"/>
                 </Field>
               </div>
-              <Field label="Description">
+              <Field label="Description" required error={errors.description}>
                 <Textarea value={values.description} onChange={(event) => set("description", event.target.value)} placeholder="Describe the product, fabric and fit…"/>
               </Field>
               <div className="grid gap-5 md:grid-cols-2">

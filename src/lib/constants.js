@@ -5,7 +5,14 @@ export const SITE = {
     description: "Discover premium fashion curated for the modern you. Quality fabrics, thoughtful design, and effortless style.",
     email: "support@berafashion.com",
     phone: "+880 1712-345678",
+    whatsapp: "https://wa.me/8801712345678",
     address: "House 12, Road 7, Banani, Dhaka 1213, Bangladesh",
+    socials: [
+        { name: "Facebook", href: "https://facebook.com/berafashion", handle: "@berafashion" },
+        { name: "Instagram", href: "https://instagram.com/berafashion", handle: "@berafashion" },
+        { name: "TikTok", href: "https://tiktok.com/@berafashion", handle: "@berafashion" },
+        { name: "YouTube", href: "https://youtube.com/@berafashion", handle: "@berafashion" },
+    ],
 };
 export const ROUTES = {
     home: "/",

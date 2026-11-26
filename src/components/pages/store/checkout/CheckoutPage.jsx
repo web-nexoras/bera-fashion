@@ -187,6 +187,7 @@ export default function CheckoutPage() {
             label: selected?.label ?? "home",
             recipientName: values.recipientName,
             phone: values.phone,
+            ...(user?.email ? { email: user.email } : {}),
             addressLine1: values.addressLine1,
             addressLine2: values.addressLine2 || undefined,
             city: values.city,
@@ -312,16 +313,16 @@ export default function CheckoutPage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Recipient name" required error={errors.recipientName?.message}>
-                  <Input {...register("recipientName")} placeholder="Full name" autoComplete="name"/>
+                  <Input {...register("recipientName")} placeholder="e.g. Ayesha Rahman" autoComplete="name"/>
                 </Field>
                 <Field label="Phone number" required error={errors.phone?.message}>
-                  <Input {...register("phone")} placeholder="01XXXXXXXXX" inputMode="tel" autoComplete="tel"/>
+                  <Input {...register("phone")} placeholder="e.g. 01712345678" inputMode="tel" autoComplete="tel"/>
                 </Field>
                 <Field label="Address line 1" required error={errors.addressLine1?.message} className="sm:col-span-2">
-                  <Input {...register("addressLine1")} placeholder="House, flat, street" autoComplete="address-line1"/>
+                  <Input {...register("addressLine1")} placeholder="House 12, Road 5, Block B" autoComplete="address-line1"/>
                 </Field>
                 <Field label="Address line 2" error={errors.addressLine2?.message} className="sm:col-span-2">
-                  <Input {...register("addressLine2")} placeholder="Area, landmark (optional)" autoComplete="address-line2"/>
+                  <Input {...register("addressLine2")} placeholder="Apartment, floor or nearby landmark (optional)" autoComplete="address-line2"/>
                 </Field>
                 <Field label="City / Area" required error={errors.city?.message}>
                   <Input {...register("city")} placeholder="e.g. Banani" autoComplete="address-level2"/>
@@ -397,7 +398,7 @@ export default function CheckoutPage() {
                 event.preventDefault();
                 void redeemCoupon();
             }
-        }} placeholder="Optional · e.g. SAVE20" aria-label="Coupon code" disabled={couponBusy}/>
+        }} placeholder="Enter coupon code (e.g. SAVE20)" aria-label="Coupon code" disabled={couponBusy}/>
                   <Button type="button" variant="secondary" onClick={() => void redeemCoupon()} loading={couponBusy} disabled={!couponInput.trim()} className="shrink-0">
                     <TicketPercent className="size-4"/> Apply
                   </Button>

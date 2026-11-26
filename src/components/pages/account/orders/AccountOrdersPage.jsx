@@ -72,7 +72,7 @@ export default function OrdersPage() {
                     {[item.size, item.color].filter(Boolean).join(" · ") || "Standard"} · Qty {item.quantity}
                   </p>
                 </div>
-                <p className="shrink-0 text-sm font-bold text-ink-800">{formatBDT(item.subtotal)}</p>
+                <p className="shrink-0 text-sm font-bold text-ink-800">{formatBDT(item.totalPrice ?? item.subtotal ?? item.price * item.quantity)}</p>
               </div>))}
           </div>
 

@@ -30,9 +30,8 @@ export default function AdminCustomersPage() {
     const onToggle = (customer) => {
         const isBlocked = !customer.isBlocked;
         toggleBlock.mutate({
-            path: `admin/customers/${customer._id}/block`,
+            path: `admin/customers/${customer._id}/${isBlocked ? "block" : "unblock"}`,
             method: "PUT",
-            body: { isBlocked },
         }, {
             onSuccess: () => {
                 setOverrides((current) => (current ?? customers).map((item) => item._id === customer._id ? { ...item, isBlocked } : item));

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
+import { SocialLinks } from "@/components/shared/social-links";
 import { SITE } from "@/lib/constants";
 const groups = [
     {
@@ -36,11 +37,15 @@ export function StoreFooter() {
       <div className="container-x grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-5">
         <div className="lg:col-span-2">
           <Logo light/>
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">{SITE.description}</p>
-          <div className="mt-6 space-y-2.5 text-sm text-white/60">
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/80">{SITE.description}</p>
+          <div className="mt-6 space-y-2.5 text-sm text-white/85">
             <p className="flex items-start gap-2.5"><MapPin className="mt-0.5 size-4 shrink-0 text-gold-300"/>{SITE.address}</p>
             <p className="flex items-center gap-2.5"><Phone className="size-4 text-gold-300"/>{SITE.phone}</p>
             <p className="flex items-center gap-2.5"><Mail className="size-4 text-gold-300"/>{SITE.email}</p>
+          </div>
+          <div className="mt-6">
+            <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-gold-300">Follow us</p>
+            <SocialLinks light />
           </div>
         </div>
 
@@ -48,13 +53,13 @@ export function StoreFooter() {
             <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-gold-300">{group.title}</h3>
             <ul className="space-y-2.5">
               {group.links.map((link) => (<li key={link.label}>
-                  <Link href={link.href} className="text-sm text-white/60 transition-colors hover:text-white">{link.label}</Link>
+                  <Link href={link.href} className="text-sm text-white/80 transition-colors hover:text-white">{link.label}</Link>
                 </li>))}
             </ul>
           </div>))}
       </div>
 
-      <div className="container-x flex flex-wrap items-center justify-between gap-3 border-t border-white/10 py-5 text-xs text-white/40">
+      <div className="container-x flex flex-wrap items-center justify-between gap-3 border-t border-white/15 py-5 text-xs text-white/65">
         <p>© {new Date().getFullYear()} {SITE.name}. All rights reserved.</p>
         <p>Crafted with care in Dhaka, Bangladesh.</p>
       </div>

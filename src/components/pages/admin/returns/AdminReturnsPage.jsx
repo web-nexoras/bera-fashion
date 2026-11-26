@@ -13,7 +13,7 @@ import { PageHeading } from "@/components/ui/section-heading";
 import { formatBDT, formatDate, titleCase } from "@/lib/utils";
 const STATUSES = ["requested", "approved", "rejected", "completed"];
 export default function AdminReturnsPage() {
-    const { data } = useAdminList(["admin", "returns"], "returns/admin");
+    const { data } = useAdminList(["admin", "returns"], "returns/admin/all");
     const action = useAdminAction();
     const [overrides, setOverrides] = useState(null);
     const [search, setSearch] = useState("");

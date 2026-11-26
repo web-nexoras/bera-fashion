@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-const fieldBase = "w-full rounded-xl border border-ink-200 bg-white px-3.5 text-sm text-ink-800 placeholder:text-ink-400 transition-colors hover:border-ink-300 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-ink-50";
+const fieldBase = "w-full rounded-xl border border-ink-200 bg-white px-3.5 text-sm text-ink-900 shadow-[0_1px_2px_rgba(27,27,35,0.03)] placeholder:text-ink-400 transition-colors hover:border-ink-300 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-500";
 export function Input({ className, ...props }) {
     return <input className={cn(fieldBase, "h-11", className)} {...props}/>;
 }

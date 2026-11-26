@@ -6,26 +6,26 @@ import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import { unsplashPhoto } from "@/lib/images";
 const slides = [
     {
-        image: unsplashPhoto("photo-1483985988355-763728e1935b", 1800),
+        image: unsplashPhoto("photo-1594938298603-c8148c4b4c8a", 1800),
         eyebrow: "The new season edit",
         title: <>Elegance, <em className="text-gold-300">worn</em> every day.</>,
-        copy: "Considered silhouettes, premium fabrics and quiet details. Discover pieces designed to move with you, from slow mornings to special occasions.",
+        copy: "Considered silhouettes, premium fabrics and quiet details. Discover pieces crafted for the modern woman — from slow mornings to special occasions.",
         href: "/products",
         cta: "Shop the collection",
     },
     {
-        image: unsplashPhoto("photo-1490481651871-ab68de25d43d", 1800),
-        eyebrow: "Made for your everyday",
-        title: <>Find your <em className="text-gold-300">own</em> kind of classic.</>,
-        copy: "Easy layers, thoughtful details and a little room to make every look your own. Meet the pieces you'll reach for again and again.",
+        image: unsplashPhoto("photo-1469334031218-e382a71b716b", 1800),
+        eyebrow: "New arrivals · 2026",
+        title: <>Flow into your <em className="text-gold-300">own</em> story.</>,
+        copy: "Palazzo drapes, full-sleeve elegance and effortless layers — meet the pieces that move beautifully with you, every single day.",
         href: "/products?isNewArrival=true",
         cta: "Explore new arrivals",
     },
     {
-        image: unsplashPhoto("photo-1516257984-b1b4d707412e", 1800),
+        image: unsplashPhoto("photo-1515372039744-b8f02a3ae446", 1800),
         eyebrow: "The BERA standard",
         title: <>Quality that moves <em className="text-gold-300">with you.</em></>,
-        copy: "Small details make a lasting difference. Discover carefully selected fabrics and versatile designs, made to become part of your story.",
+        copy: "Small details make a lasting difference. Carefully selected fabrics and versatile feminine designs, made to become part of your story.",
         href: "/about",
         cta: "Discover our story",
     },
@@ -48,11 +48,11 @@ export function HeroSlider() {
       {slides.map((slide, index) => (<div key={slide.eyebrow} className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${index === active ? "opacity-100" : "pointer-events-none opacity-0"}`} aria-hidden={index !== active}>
           <Image src={slide.image} alt="" fill priority={index === 0} sizes="100vw" className="object-cover object-center"/>
         </div>))}
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-brand-950/70 via-brand-950/40 to-brand-950/10"/>
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-brand-950/55 via-transparent to-brand-950/10"/>
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-brand-950/85 via-brand-950/50 to-brand-950/15"/>
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-brand-950/65 via-transparent to-brand-950/15"/>
 
       <div className="container-x relative flex min-h-[620px] items-center py-20 sm:min-h-[680px] lg:min-h-[min(760px,calc(100svh-108px))]">
-        <div className="max-w-3xl rounded-3xl border border-white/15 bg-brand-950/25 p-6 shadow-2xl backdrop-blur-[2px] sm:p-10 lg:p-12">
+        <div className="max-w-3xl rounded-3xl border border-white/20 bg-brand-950/50 p-6 shadow-2xl backdrop-blur-sm sm:p-10 lg:p-12">
           <div key={active} className="animate-fade-up motion-reduce:animate-none" aria-live="polite" aria-atomic="true">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/25 bg-brand-950/45 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-gold-300 shadow-sm">
               <Sparkles aria-hidden className="size-3.5"/> {slides[active].eyebrow}

@@ -2,12 +2,12 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 const variants = {
-    primary: "bg-brand-700 text-white hover:bg-brand-800 shadow-soft disabled:bg-brand-300",
-    secondary: "bg-brand-50 text-brand-800 hover:bg-brand-100 border border-brand-100",
-    outline: "bg-white text-ink-700 border border-ink-200 hover:border-brand-400 hover:text-brand-700",
-    ghost: "bg-transparent text-ink-600 hover:bg-ink-100 hover:text-ink-900",
-    danger: "bg-red-600 text-white hover:bg-red-700",
-    gold: "bg-gold-500 text-ink-900 hover:bg-gold-300",
+    primary: "bg-gradient-to-b from-brand-600 to-brand-800 text-white hover:from-brand-700 hover:to-brand-900 btn-3d disabled:from-brand-700/60 disabled:to-brand-800/60",
+    secondary: "bg-brand-50 text-brand-800 hover:bg-brand-100 border border-brand-200/80 shadow-xs",
+    outline: "bg-white text-ink-800 border border-ink-200 hover:border-brand-500 hover:text-brand-700 shadow-xs",
+    ghost: "bg-transparent text-ink-700 hover:bg-ink-100 hover:text-ink-900",
+    danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
+    gold: "bg-gradient-to-b from-gold-300 to-gold-500 text-brand-950 font-bold hover:from-gold-100 hover:to-gold-300 shadow-[0_10px_24px_-10px_rgba(201,162,39,0.65),inset_0_1px_0_rgba(255,255,255,0.4)]",
 };
 const sizes = {
     sm: "h-9 px-3.5 text-xs gap-1.5",

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { API_TIMEOUT_MS, AUTH_COOKIE, SESSION_ID_COOKIE, backendUrl } from "@/lib/api/config";
 import { toEnvelope } from "@/lib/api/server";
-import { decodeSession } from "@/lib/api/session";
+import { decodeSession, encodeSession } from "@/lib/api/session";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 async function forward(request, context) {
@@ -45,24 +45,60 @@ async function forward(request, context) {
         return NextResponse.json({ success: false, message: "Administrator access required.", data: null }, { status: 403 });
     }
     let envelope;
-    try {
+    let refreshedSession = null;
+    const sendToBackend = async (bearerToken) => {
         const response = await fetch(backendUrl(pathname), {
             method,
             headers: {
                 ...(!multipartBody ? { "Content-Type": "application/json" } : {}),
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                ...(bearerToken ? { Authorization: `Bearer ${bearerToken}` } : {}),
                 "X-Session-Id": sessionId,
             },
             body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
             signal: AbortSignal.timeout(API_TIMEOUT_MS),
             cache: "no-store",
         });
-        envelope = await toEnvelope(response);
+        return await toEnvelope(response);
+    };
+    try {
+        envelope = await sendToBackend(token);
+        if (envelope.status === 401 && session?.refreshToken) {
+            const refreshResponse = await fetch(backendUrl("auth/refresh-token"), {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refreshToken: session.refreshToken }),
+                signal: AbortSignal.timeout(API_TIMEOUT_MS),
+                cache: "no-store",
+            });
+            const refreshEnvelope = await toEnvelope(refreshResponse);
+            if (refreshEnvelope.success && refreshEnvelope.data?.accessToken) {
+                refreshedSession = {
+                    ...session,
+                    accessToken: refreshEnvelope.data.accessToken,
+                    refreshToken: refreshEnvelope.data.refreshToken ?? session.refreshToken,
+                };
+                envelope = await sendToBackend(refreshedSession.accessToken);
+            }
+        }
     }
     catch {
         envelope = { success: false, message: "Service is temporarily unavailable. Please try again.", data: null, status: 503 };
     }
     const response = NextResponse.json(envelope, { status: envelope.status ?? 200 });
+    if (refreshedSession) {
+        try {
+            response.cookies.set(AUTH_COOKIE, encodeSession(refreshedSession), {
+                httpOnly: true,
+                sameSite: "lax",
+                secure: process.env.NODE_ENV === "production",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 7,
+            });
+        }
+        catch {
+            // Keep response intact if session re-encoding fails.
+        }
+    }
     response.cookies.set(SESSION_ID_COOKIE, sessionId, {
         httpOnly: true,
         sameSite: "lax",

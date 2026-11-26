@@ -2,7 +2,6 @@ import { PackageSearch } from "lucide-react";
 import { ProductFilters, ProductPagination, } from "@/components/store/product-filters";
 import { ProductCard } from "@/components/store/product-card";
 import { EmptyState } from "@/components/ui/feedback";
-import { PageHeading as Heading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button";
 import { getBrands, getCategories, getProducts } from "@/api/products";
 import { buildQuery } from "@/lib/utils";
@@ -52,13 +51,30 @@ export default async function ProductsPage({ searchParams }) {
         (filters.isNewArrival && "— new arrivals") ||
         (filters.isBestSeller && "— best sellers") ||
         (filters.isFeatured && "— featured");
-    return (<div className="container-x py-10 sm:py-14">
-      <div className="mb-7 flex items-end justify-between gap-4">
-        <Heading title="All products" description={activeLabel ? `Explore the collection ${activeLabel}.` : "Explore the full BERA collection."}/>
-        <div className="hidden text-xs font-semibold uppercase tracking-wider text-ink-400 sm:block">
-          SSR · {pagination.total} results
+    const pageTitle = filters.isNewArrival
+        ? "New arrivals"
+        : filters.isBestSeller
+            ? "Best sellers"
+            : filters.isFeatured
+                ? "Featured edit"
+                : "All products";
+    return (<>
+      <section className="bg-gradient-to-r from-brand-950 via-brand-900 to-brand-800 py-12 text-white sm:py-14">
+        <div className="container-x flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-gold-300">BERA Collection</p>
+            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-white sm:text-5xl">{pageTitle}</h1>
+            <p className="mt-2.5 max-w-xl text-sm text-white/85">
+              {activeLabel ? `Explore the collection ${activeLabel}.` : "Explore the full BERA collection crafted for everyday elegance."}
+            </p>
+          </div>
+          <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-gold-300 backdrop-blur-xs">
+            {pagination.total} pieces
+          </span>
         </div>
-      </div>
+      </section>
+
+      <div className="container-x py-10 sm:py-12">
 
       <ProductFilters categories={categories} brands={brands} filters={filters} total={pagination.total}/>
 
@@ -82,5 +98,6 @@ export default async function ProductsPage({ searchParams }) {
                 View all products
               </ButtonLink>}/>
         </div>)}
-    </div>);
+    </div>
+    </>);
 }

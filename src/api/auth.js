@@ -11,14 +11,12 @@ export const verifyOtp = (payload) =>
   authData(api.post("/verify-email", payload, { baseURL: AUTH_BASE }));
 export const verifyEmail = (token) =>
   authData(
-    api.post(
-      `/verify-email/${encodeURIComponent(token)}`,
-      { token },
-      { baseURL: AUTH_BASE },
-    ),
+    api.get(`/verify-email/${encodeURIComponent(token)}`, {
+      baseURL: AUTH_BASE,
+    }),
   );
 export const resendOtp = (payload) =>
-  authData(api.post("/resend-otp", payload, { baseURL: AUTH_BASE }));
+  authData(api.post("/resend-verification", payload, { baseURL: AUTH_BASE }));
 export const forgotPassword = (payload) =>
   authData(api.post("/forgot-password", payload, { baseURL: AUTH_BASE }));
 export const resetPassword = (token, payload) =>

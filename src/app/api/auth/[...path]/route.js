@@ -37,28 +37,36 @@ async function callBackend(pathname, method, body, token) {
 }
 export async function GET(request, context) {
     const { path } = await context.params;
-    if (path.length === 1 && path[0] === "session") {
+    const pathname = path.join("/");
+    if (pathname === "session") {
         const cookieStore = await cookies();
         const session = decodeSession(cookieStore.get(AUTH_COOKIE)?.value);
         return NextResponse.json(session
             ? { success: true, data: publicSession(session) }
             : { success: true, data: { user: null, isAuthenticated: false } });
     }
+    if (/^verify-email\/[^/]+$/.test(pathname)) {
+        const envelope = await callBackend(pathname, "GET");
+        return NextResponse.json(envelope, { status: envelope.status ?? (envelope.success ? 200 : 400) });
+    }
     return NextResponse.json({ success: false, message: "Authentication endpoint not found.", data: null }, { status: 404 });
 }
 export async function POST(request, context) {
     const { path } = await context.params;
     const pathname = path.join("/");
-    const allowedPath = ["login", "register", "verify-email", "resend-otp", "forgot-password", "logout"].includes(pathname) || /^reset-password\/[^/]+$/.test(pathname) || /^verify-email\/[^/]+$/.test(pathname);
+    const allowedPath = ["login", "register", "resend-otp", "resend-verification", "forgot-password", "logout"].includes(pathname) || /^reset-password\/[^/]+$/.test(pathname) || /^verify-email\/[^/]+$/.test(pathname);
     if (!allowedPath) {
         return NextResponse.json({ success: false, message: "Authentication endpoint not found.", data: null }, { status: 404 });
     }
     const body = (await request.json().catch(() => ({})));
     const cookieStore = await cookies();
+    const existingSession = decodeSession(cookieStore.get(AUTH_COOKIE)?.value);
     // Server-side validation — the browser schema is a convenience, this is the
     // boundary that protects the backend from malformed or hostile payloads.
     const invalid = (message) => NextResponse.json({ success: false, message, data: null, status: 400 }, { status: 400 });
     let outgoing = body;
+    let backendPath = pathname;
+    let backendMethod = "POST";
     if (pathname === "login") {
         const parsed = loginSchema.safeParse(body);
         if (!parsed.success)
@@ -82,15 +90,23 @@ export async function POST(request, context) {
             return invalid(firstIssue(parsed.error));
         outgoing = { email: parsed.data.email };
     }
+    else if (pathname === "resend-otp") {
+        backendPath = "resend-verification";
+    }
+    else if (/^verify-email\/[^/]+$/.test(pathname)) {
+        backendMethod = "GET";
+        outgoing = undefined;
+    }
     if (pathname === "logout") {
+        if (existingSession?.accessToken) {
+            await callBackend("logout", "POST", existingSession.refreshToken ? { refreshToken: existingSession.refreshToken } : {}, existingSession.accessToken).catch(() => null);
+        }
         const response = NextResponse.json({ success: true, message: "Logged out successfully" });
         response.cookies.delete(AUTH_COOKIE);
         response.cookies.delete(SESSION_ID_COOKIE);
         return response;
     }
-    const envelope = await callBackend(pathname, "POST", outgoing, cookieStore.get(AUTH_COOKIE)?.value
-        ? decodeSession(cookieStore.get(AUTH_COOKIE)?.value)?.accessToken
-        : undefined);
+    const envelope = await callBackend(backendPath, backendMethod, outgoing, existingSession?.accessToken);
     if (!envelope.success) {
         return NextResponse.json(envelope, { status: envelope.status ?? 401 });
     }
@@ -100,6 +116,7 @@ export async function POST(request, context) {
             const session = {
                 user: data.user,
                 accessToken: data.accessToken,
+                ...(data.refreshToken ? { refreshToken: data.refreshToken } : {}),
             };
             const response = NextResponse.json({
                 success: true,
